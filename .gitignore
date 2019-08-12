@@ -35,3 +35,6 @@ server/public/js/
 #mp3 and pdf files
 *.mp3
 *.pdf
+
+#package-lock.json
+package-lock.json

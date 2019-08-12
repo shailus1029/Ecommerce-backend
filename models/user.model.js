@@ -1,24 +1,112 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 //defining the model properties;
-const User = new Schema ({
-
-    userId: { type: String, required: true },
-
-    firstname: { type: String },
-    
-    lastname: { type: String },
-    
-    email: { type: String, required: true, unique: true },
-    
-    password: { type: String, required: true },
-    
-    mobile: { type: Number }
-
-}, {
+const userSchema = new Schema(
+  {
+    userId: {
+      type: String,
+      required: true
+    },
+    firstname: {
+      type: String
+    },
+    lastname: {
+      type: String
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    password: {
+      type: String,
+      required: true
+    },
+    mobile: {
+      type: Number
+    },
+    username: {
+      type: String,
+      required: true
+    }
+  },
+  {
     timestamps: true
-});
+  }
+);
+
+const addUser = body => {
+  const User = mongoose.model("User", userSchema);
+  const user = new User(body);
+  return new Promise((resolve, reject) => {
+    user.save((err, data) => {
+      if (err) {
+        reject({ error: err });
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+
+const getList = () => {
+  const User = mongoose.model("User", userSchema);
+  return new Promise((resolve, reject) => {
+    User.find({}, (err, data) => {
+      if (err) {
+        return reject(err);
+      } else {
+        return resolve(data);
+      }
+    });
+  });
+};
+
+const getUser = id => {
+  const User = mongoose.model("User", userSchema);
+  return new Promise((resolve, reject) => {
+    User.findById(id, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+
+const updateUser = (id, body) => {
+  const User = mongoose.model("User", userSchema);
+  return new Promise((resolve, reject) => {
+    User.findByIdAndUpdate(id, { $set: body }, { new: true }, (err, user) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(user);
+      }
+    });
+  });
+};
+
+const deleteUser = id => {
+  const User = mongoose.model("User", userSchema);
+  return new Promise((resolve, reject) => {
+    User.findByIdAndRemove(id, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
 
 //exporting the model
-module.exports = mongoose.model('User', User);
+module.exports = {
+  addUser,
+  getList,
+  getUser,
+  updateUser,
+  deleteUser
+};
