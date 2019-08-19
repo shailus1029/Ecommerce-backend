@@ -8,24 +8,27 @@ const http = require("http");
 //call the database connectivity function
 db();
 
-//importing routes
-const user = require("./routes/user.route");
-
 //initilizing our express app
 const app = express();
+app.use(express.json());
+
+//adding routes to application
+require("./routes")(app);
 
 //adding body parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use("/api/user", user);
-
 //defining the port to run the server
 const port = 8000;
 
-var server = http.createServer(app);
+// var server = http.createServer(app);
 
 //listening to the port 8000
-server.listen(port, () => {
+const server = app.listen(port, () => {
   console.log("server is running on  port : ", port);
 });
+
+module.exports = {
+  server
+};
