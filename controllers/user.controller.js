@@ -1,6 +1,7 @@
 const services = require("../services/user.service");
 const uuidv4 = require("uuid/v4");
 const { handleError } = require("../utils/error.handler");
+const logger = require("../utils/logger");
 
 exports.createUser = function(req, res) {
   let errors = [];
@@ -11,7 +12,8 @@ exports.createUser = function(req, res) {
     if (Object.keys(body).length === 0) {
       isError = true;
       handleError("noPayload", errors);
-      res.status(400).json({ errors: errors });
+      logger.error(errors);
+      return res.status(400).json({ errors: errors });
     }
     if (!body.firstname) {
       isError = true;
@@ -40,10 +42,10 @@ exports.createUser = function(req, res) {
       return services.createUser(body);
     })
     .then(data => {
-      console.log("data");
       res.status(200).json({ data: data });
     })
     .catch(err => {
+      logger.error(err);
       res.status(400).json({ errors: err });
     });
 };
@@ -65,6 +67,7 @@ exports.getUserList = function(req, res) {
       res.status(200).json({ data: data });
     })
     .catch(err => {
+      logger.error(err);
       res.status(400).json({ errors: err });
     });
 };
@@ -86,7 +89,7 @@ exports.getUserById = function(req, res) {
       res.status(200).json({ data: data });
     })
     .catch(err => {
-      console.log("err ===>>>", err);
+      logger.error(err);
       res.status(400).json({ errors: err });
     });
 };
@@ -98,7 +101,8 @@ exports.updateUser = function(req, res) {
     if (Object.keys(req.body).length === 0) {
       isError = true;
       handleError("noPayload", errors);
-      res.status(400).json({ errors: errors });
+      logger.error(errors);
+      return res.status(400).json({ errors: errors });
     }
     if (isError) {
       reject(errors);
@@ -113,6 +117,7 @@ exports.updateUser = function(req, res) {
       res.status(200).json({ data: data });
     })
     .catch(err => {
+      logger.error(err);
       res.status(400).json({ errors: err });
     });
 };
@@ -134,6 +139,7 @@ exports.deleteUser = function(req, res) {
       res.status(200).json({ data: "user is deleted successfullty" });
     })
     .catch(err => {
+      logger.error(err);
       res.status(500).json({ errors: err });
     });
 };
