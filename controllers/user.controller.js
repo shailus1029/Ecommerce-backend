@@ -6,7 +6,7 @@ const logger = require("../utils/logger");
 exports.createUser = function(req, res) {
   let errors = [];
   let isError = false;
-  const body = req.body;
+  const body = req.body.data;
 
   return new Promise((resolve, reject) => {
     if (Object.keys(body).length === 0) {
@@ -51,14 +51,8 @@ exports.createUser = function(req, res) {
 };
 
 exports.getUserList = function(req, res) {
-  let errors = [];
-  let isError = false;
   return new Promise((resolve, reject) => {
-    if (isError) {
-      return reject(errors);
-    } else {
-      return resolve(true);
-    }
+    return resolve(true);
   })
     .then(resolved => {
       return services.userList();
@@ -73,14 +67,8 @@ exports.getUserList = function(req, res) {
 };
 
 exports.getUserById = function(req, res) {
-  let errors = [];
-  let isError = false;
   return new Promise((resolve, reject) => {
-    if (isError) {
-      reject(errors);
-    } else {
-      resolve(true);
-    }
+    resolve(true);
   })
     .then(resolved => {
       return services.getUser(req.params.id);
@@ -96,22 +84,18 @@ exports.getUserById = function(req, res) {
 
 exports.updateUser = function(req, res) {
   let errors = [];
-  let isError = false;
+  const body = req.body.data;
   return new Promise((resolve, reject) => {
-    if (Object.keys(req.body).length === 0) {
-      isError = true;
+    if (Object.keys(body).length === 0) {
       handleError("noPayload", errors);
       logger.error(errors);
       return res.status(400).json({ errors: errors });
     }
-    if (isError) {
-      reject(errors);
-    } else {
-      resolve(true);
-    }
+
+    resolve(true);
   })
     .then(resolved => {
-      return services.updateUser(req.params.id, req.body);
+      return services.updateUser(req.params.id, body);
     })
     .then(data => {
       res.status(200).json({ data: data });
@@ -123,14 +107,8 @@ exports.updateUser = function(req, res) {
 };
 
 exports.deleteUser = function(req, res) {
-  let errors = [];
-  let isError = false;
   return new Promise((resolve, reject) => {
-    if (isError) {
-      reject(errors);
-    } else {
-      resolve(true);
-    }
+    resolve(true);
   })
     .then(resolved => {
       return services.deleteUser(req.params.id);
