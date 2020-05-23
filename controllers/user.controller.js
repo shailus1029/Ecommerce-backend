@@ -42,11 +42,11 @@ exports.createUser = function(req, res) {
       return services.createUser(body);
     })
     .then(data => {
-      res.status(200).json({ data: data });
+      res.status(200).json({ success: true, data: data });
     })
     .catch(err => {
       logger.error(err);
-      res.status(400).json({ errors: err });
+      res.status(400).json({ success: false, errors: err });
     });
 };
 
@@ -58,11 +58,21 @@ exports.getUserList = function(req, res) {
       return services.userList();
     })
     .then(data => {
-      res.status(200).json({ data: data });
+      const filterdData = data.map(user => {
+        let obj = {};
+        obj.id = user._id;
+        obj.userId = user.userId;
+        obj.firstname = user.firstname;
+        obj.lastname = user.lastname;
+        obj.email = user.email;
+        obj.username = user.username;
+        return obj;
+      })
+      res.status(200).json({ success: true, userList: filterdData });
     })
     .catch(err => {
       logger.error(err);
-      res.status(400).json({ errors: err });
+      res.status(400).json({ success: false, errors: err });
     });
 };
 
@@ -74,11 +84,11 @@ exports.getUserById = function(req, res) {
       return services.getUser(req.params.id);
     })
     .then(data => {
-      res.status(200).json({ data: data });
+      res.status(200).json({ success: true, data: data });
     })
     .catch(err => {
       logger.error(err);
-      res.status(400).json({ errors: err });
+      res.status(400).json({ success: false, errors: err });
     });
 };
 
@@ -89,7 +99,7 @@ exports.updateUser = function(req, res) {
     if (Object.keys(body).length === 0) {
       handleError("noPayload", errors);
       logger.error(errors);
-      return res.status(400).json({ errors: errors });
+      return res.status(400).json({ success: false, errors: errors });
     }
 
     resolve(true);
@@ -98,11 +108,11 @@ exports.updateUser = function(req, res) {
       return services.updateUser(req.params.id, body);
     })
     .then(data => {
-      res.status(200).json({ data: data });
+      res.status(200).json({ success: true, data: data });
     })
     .catch(err => {
       logger.error(err);
-      res.status(400).json({ errors: err });
+      res.status(400).json({ success: false, errors: err });
     });
 };
 
@@ -114,10 +124,10 @@ exports.deleteUser = function(req, res) {
       return services.deleteUser(req.params.id);
     })
     .then(data => {
-      res.status(200).json({ data: "user is deleted successfullty" });
+      res.status(200).json({ success: true, data: "user is deleted successfullty" });
     })
     .catch(err => {
       logger.error(err);
-      res.status(500).json({ errors: err });
+      res.status(500).json({ success: false, errors: err });
     });
 };
